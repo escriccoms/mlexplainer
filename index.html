@@ -153,25 +153,6 @@
                     </div>
                 </div>
 
-                <div class="mt-8 flex justify-center">
-                    <button id="generate-ml-fact" class="btn-primary font-bold py-3 px-6 rounded-lg text-lg flex items-center space-x-2">
-                        ✨ Generate ML Fact
-                    </button>
-                </div>
-                <div id="ml-fact-display" class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-800 hidden">
-                    <p id="ml-fact-text" class="text-center"></p>
-                    <div id="ml-fact-loading" class="text-center text-gray-500 hidden">Loading...</div>
-                </div>
-
-                <div class="mt-8 flex justify-center">
-                    <button class="summarize-section-btn btn-primary font-bold py-3 px-6 rounded-lg text-lg flex items-center space-x-2" data-section-id="intro">
-                        ✨ Summarize Section
-                    </button>
-                </div>
-                <div id="intro-summary-display" class="summary-display mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg text-gray-800 hidden">
-                    <p class="summary-text"></p>
-                    <div class="summary-loading text-center text-gray-500 hidden">Loading...</div>
-                </div>
             </section>
 
             <section id="paradigms" class="content-section">
@@ -196,15 +177,6 @@
                     </div>
                 </div>
 
-                <div class="mt-8 flex justify-center">
-                    <button class="summarize-section-btn btn-primary font-bold py-3 px-6 rounded-lg text-lg flex items-center space-x-2" data-section-id="paradigms">
-                        ✨ Summarize Section
-                    </button>
-                </div>
-                <div id="paradigms-summary-display" class="summary-display mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg text-gray-800 hidden">
-                    <p class="summary-text"></p>
-                    <div class="summary-loading text-center text-gray-500 hidden">Loading...</div>
-                </div>
             </section>
 
             <section id="explorer" class="content-section">
@@ -228,26 +200,11 @@
                                 </div>
                                 <div id="explorer-controls" class="flex flex-col sm:flex-row justify-center items-center mt-4 space-y-4 sm:space-y-0 sm:space-x-4">
                                     </div>
-                                <div id="gemini-explanation-display" class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg text-blue-800 hidden">
-                                    <p id="gemini-explanation-text"></p>
-                                    <div id="gemini-explanation-loading" class="text-center text-gray-500 hidden">Loading...</div>
-                                </div>
-                                <div class="mt-8">
-                                    <button id="generate-quiz-question" class="btn-primary font-bold py-3 px-6 rounded-lg text-lg flex items-center space-x-2">
-                                        ✨ Generate Quiz Question
-                                    </button>
-                                    <div id="quiz-question-display" class="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800 hidden">
-                                        <p id="quiz-question-text" class="font-semibold"></p>
-                                        <div id="quiz-options" class="mt-4 space-y-2"></div>
-                                        <button id="show-quiz-answer" class="btn-primary font-bold py-2 px-4 rounded-lg text-sm mt-4 hidden">Show Answer</button>
-                                        <p id="quiz-answer-text" class="mt-2 text-sm hidden"></p>
-                                        <div id="quiz-loading" class="text-center text-gray-500 hidden">Loading...</div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
-                </section>
+                </div>
+            </section>
             
             <section id="deep-learning" class="content-section">
                 <h2 class="text-4xl font-bold text-gray-800">Deep Learning Architectures</h2>
@@ -257,85 +214,34 @@
                         <h3 class="font-bold text-xl">Convolutional Neural Networks (CNNs)</h3>
                         <p class="mt-2 text-gray-600">Masters of vision. CNNs are designed to process grid-like data, such as images. They use layers of filters to automatically learn and detect features like edges, shapes, and objects.</p>
                         <p class="mt-3 text-sm font-semibold text-gray-500">Use Cases: Image Recognition, Video Analysis</p>
-                        <button data-architecture="Convolutional Neural Network" class="generate-app-idea-btn btn-primary font-bold py-2 px-4 rounded-lg text-sm mt-4 w-full flex items-center justify-center space-x-2">
-                            ✨ Generate Idea
-                        </button>
-                        <div class="app-idea-display mt-3 p-3 bg-indigo-50 border border-indigo-200 rounded-lg text-indigo-800 hidden">
-                            <p class="app-idea-text text-sm"></p>
-                            <div class="app-idea-loading text-center text-gray-500 text-sm hidden">Loading...</div>
-                        </div>
                     </div>
                     <div class="card">
                         <h3 class="font-bold text-xl">Recurrent Neural Networks (RNNs)</h3>
                         <p class="mt-2 text-gray-600">The sequence specialists. RNNs have internal memory, allowing them to process sequences of data like text or time series. They are fundamental to natural language processing.</p>
                         <p class="mt-3 text-sm font-semibold text-gray-500">Use Cases: Speech Recognition, Text Generation</p>
-                        <button data-architecture="Recurrent Neural Network" class="generate-app-idea-btn btn-primary font-bold py-2 px-4 rounded-lg text-sm mt-4 w-full flex items-center justify-center space-x-2">
-                            ✨ Generate Idea
-                        </button>
-                        <div class="app-idea-display mt-3 p-3 bg-indigo-50 border border-indigo-200 rounded-lg text-indigo-800 hidden">
-                            <p class="app-idea-text text-sm"></p>
-                            <div class="app-idea-loading text-center text-gray-500 text-sm hidden">Loading...</div>
-                        </div>
                     </div>
                     <div class="card">
                         <h3 class="font-bold text-xl">Long Short-Term Memory (LSTMs)</h3>
                         <p class="mt-2 text-gray-600">An advanced RNN. LSTMs solve the short-term memory problem of standard RNNs, enabling them to learn long-range dependencies in sequential data. They use special "gates" to control information flow.</p>
                         <p class="mt-3 text-sm font-semibold text-gray-500">Use Cases: Machine Translation, Handwriting Recognition</p>
-                        <button data-architecture="Long Short-Term Memory network (LSTM)" class="generate-app-idea-btn btn-primary font-bold py-2 px-4 rounded-lg text-sm mt-4 w-full flex items-center justify-center space-x-2">
-                            ✨ Generate Idea
-                        </button>
-                        <div class="app-idea-display mt-3 p-3 bg-indigo-50 border border-indigo-200 rounded-lg text-indigo-800 hidden">
-                            <p class="app-idea-text text-sm"></p>
-                            <div class="app-idea-loading text-center text-gray-500 text-sm hidden">Loading...</div>
-                        </div>
                     </div>
                     <div class="card">
                         <h3 class="font-bold text-xl">Generative Adversarial Networks (GANs)</h3>
                         <p class="mt-2 text-gray-600">The creative artists. GANs consist of two competing networks: a Generator that creates new data and a Discriminator that tries to tell fake from real. This adversarial process results in highly realistic generated content.</p>
                         <p class="mt-3 text-sm font-semibold text-gray-500">Use Cases: Image Generation, Data Augmentation</p>
-                        <button data-architecture="Generative Adversarial Network (GAN)" class="generate-app-idea-btn btn-primary font-bold py-2 px-4 rounded-lg text-sm mt-4 w-full flex items-center justify-center space-x-2">
-                            ✨ Generate Idea
-                        </button>
-                        <div class="app-idea-display mt-3 p-3 bg-indigo-50 border border-indigo-200 rounded-lg text-indigo-800 hidden">
-                            <p class="app-idea-text text-sm"></p>
-                            <div class="app-idea-loading text-center text-gray-500 text-sm hidden">Loading...</div>
-                        </div>
                     </div>
                     <div class="card">
                         <h3 class="font-bold text-xl">Autoencoders</h3>
                         <p class="mt-2 text-gray-600">The data compressors. Autoencoders learn to compress data into a low-dimensional representation (encoding) and then reconstruct it back to its original form. They are excellent for anomaly detection and dimensionality reduction.</p>
                         <p class="mt-3 text-sm font-semibold text-gray-500">Use Cases: Anomaly Detection, Data Denoising</p>
-                        <button data-architecture="Autoencoder" class="generate-app-idea-btn btn-primary font-bold py-2 px-4 rounded-lg text-sm mt-4 w-full flex items-center justify-center space-x-2">
-                            ✨ Generate Idea
-                        </button>
-                        <div class="app-idea-display mt-3 p-3 bg-indigo-50 border border-indigo-200 rounded-lg text-indigo-800 hidden">
-                            <p class="app-idea-text text-sm"></p>
-                            <div class="app-idea-loading text-center text-gray-500 text-sm hidden">Loading...</div>
-                        </div>
                     </div>
                     <div class="card">
                         <h3 class="font-bold text-xl">Transformers</h3>
                         <p class="mt-2 text-gray-600">The new standard in NLP. Transformers use a "self-attention" mechanism to weigh the importance of different words in a sequence, allowing for parallel processing and a superior understanding of context.</p>
                         <p class="mt-3 text-sm font-semibold text-gray-500">Use Cases: Large Language Models (GPT), Translation</p>
-                        <button data-architecture="Transformer" class="generate-app-idea-btn btn-primary font-bold py-2 px-4 rounded-lg text-sm mt-4 w-full flex items-center justify-center space-x-2">
-                            ✨ Generate Idea
-                        </button>
-                        <div class="app-idea-display mt-3 p-3 bg-indigo-50 border border-indigo-200 rounded-lg text-indigo-800 hidden">
-                            <p class="app-idea-text text-sm"></p>
-                            <div class="app-idea-loading text-center text-gray-500 text-sm hidden">Loading...</div>
-                        </div>
                     </div>
                 </div>
 
-                <div class="mt-8 flex justify-center">
-                    <button class="summarize-section-btn btn-primary font-bold py-3 px-6 rounded-lg text-lg flex items-center space-x-2" data-section-id="deep-learning">
-                        ✨ Summarize Section
-                    </button>
-                </div>
-                <div id="deep-learning-summary-display" class="summary-display mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg text-gray-800 hidden">
-                    <p class="summary-text"></p>
-                    <div class="summary-loading text-center text-gray-500 hidden">Loading...</div>
-                </div>
             </section>
             
             <section id="transformers" class="content-section">
@@ -364,15 +270,6 @@
                     </div>
                 </div>
 
-                <div class="mt-8 flex justify-center">
-                    <button class="summarize-section-btn btn-primary font-bold py-3 px-6 rounded-lg text-lg flex items-center space-x-2" data-section-id="transformers">
-                        ✨ Summarize Section
-                    </button>
-                </div>
-                <div id="transformers-summary-display" class="summary-display mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg text-gray-800 hidden">
-                    <p class="summary-text"></p>
-                    <div class="summary-loading text-center text-gray-500 hidden">Loading...</div>
-                </div>
             </section>
 
             <section id="podcast-overview" class="content-section">
@@ -386,137 +283,12 @@
                 </div>
                 <p class="mt-4 text-sm text-gray-500 text-center">Note: This is a placeholder audio file for demonstration purposes.</p>
 
-                <div class="mt-8 flex justify-center">
-                    <button class="summarize-section-btn btn-primary font-bold py-3 px-6 rounded-lg text-lg flex items-center space-x-2" data-section-id="podcast-overview">
-                        ✨ Summarize Section
-                    </button>
-                </div>
-                <div id="podcast-overview-summary-display" class="summary-display mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg text-gray-800 hidden">
-                    <p class="summary-text"></p>
-                    <div class="summary-loading text-center text-gray-500 hidden">Loading...</div>
-                </div>
             </section>
 
         </main>
     </div>
 
-    <button id="toggle-gemini-chat" class="fixed bottom-6 right-6 bg-purple-600 text-white rounded-full p-4 shadow-lg hover:bg-purple-700 transition-colors text-2xl z-1000">
-        ✨
-    </button>
-
-    <div id="ask-gemini-panel" class="ask-gemini-panel">
-        <div class="flex justify-between items-center">
-            <h3 class="text-xl font-bold text-gray-800">Ask Gemini</h3>
-            <button id="close-gemini-panel" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
-        </div>
-        <input type="text" id="gemini-query-input" placeholder="e.g., What is overfitting?" class="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-300">
-        <button id="submit-gemini-query" class="btn-primary font-bold py-2 px-4 rounded-lg flex items-center justify-center space-x-2">
-            Ask
-        </button>
-        <div id="gemini-query-display" class="p-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-800 hidden">
-            <p id="gemini-query-text" class="text-sm"></p>
-            <div id="gemini-query-loading" class="text-center text-gray-500 hidden">Loading...</div>
-        </div>
-    </div>
-
     <script>
-        const apiKey = ""; // Gemini API key - leave as empty string for Canvas to provide at runtime
-
-        async function fetchGeminiResponse(prompt, targetElement, loadingElement) {
-            targetElement.parentElement.classList.remove('hidden');
-            targetElement.innerHTML = ''; // Clear previous content
-            loadingElement.classList.remove('hidden');
-
-            try {
-                let chatHistory = [];
-                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-                const payload = { contents: chatHistory };
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    targetElement.innerHTML = `<p class="text-red-600">Error ${response.status}: ${errorText}</p>`;
-                    console.error(`Gemini API Error ${response.status}:`, errorText);
-                    return;
-                }
-
-                const result = await response.json();
-
-                if (result.candidates && result.candidates.length > 0 &&
-                    result.candidates[0].content && result.candidates[0].content.parts &&
-                    result.candidates[0].content.parts.length > 0) {
-                    const text = result.candidates[0].content.parts[0].text;
-                    targetElement.innerHTML = text;
-                } else {
-                    targetElement.innerHTML = '<p class="text-red-600">Error: Could not get a valid response from Gemini.</p>';
-                    console.error("Gemini API response structure unexpected:", result);
-                }
-            } catch (error) {
-                targetElement.innerHTML = `<p class="text-red-600">Error fetching response: ${error.message}</p>`;
-                console.error("Error calling Gemini API:", error);
-            } finally {
-                loadingElement.classList.add('hidden');
-            }
-        }
-
-        async function fetchStructuredGeminiResponse(prompt, schema, targetElement, loadingElement) {
-            targetElement.parentElement.classList.remove('hidden');
-            targetElement.innerHTML = ''; // Clear previous content
-            loadingElement.classList.remove('hidden');
-
-            try {
-                let chatHistory = [];
-                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-                const payload = {
-                    contents: chatHistory,
-                    generationConfig: {
-                        responseMimeType: "application/json",
-                        responseSchema: schema
-                    }
-                };
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    targetElement.innerHTML = `<p class="text-red-600">Error ${response.status}: ${errorText}</p>`;
-                    console.error(`Gemini API Error ${response.status}:`, errorText);
-                    return null;
-                }
-
-                const result = await response.json();
-
-                if (result.candidates && result.candidates.length > 0 &&
-                    result.candidates[0].content && result.candidates[0].content.parts &&
-                    result.candidates[0].content.parts.length > 0) {
-                    const jsonString = result.candidates[0].content.parts[0].text;
-                    const parsedJson = JSON.parse(jsonString);
-                    return parsedJson;
-                } else {
-                    targetElement.innerHTML = '<p class="text-red-600">Error: Could not get a valid structured response from Gemini.</p>';
-                    console.error("Gemini API structured response structure unexpected:", result);
-                    return null;
-                }
-            } catch (error) {
-                targetElement.innerHTML = `<p class="text-red-600">Error fetching structured response: ${error.message}</p>`;
-                console.error("Error calling Gemini API for structured response:", error);
-                return null;
-            } finally {
-                loadingElement.classList.add('hidden');
-            }
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
             const navLinks = document.querySelectorAll('#main-nav a');
             const sections = document.querySelectorAll('.content-section');
@@ -530,19 +302,19 @@
                 regression: {
                     title: '<h3>Regression: Predicting Continuous Values</h3>',
                     text: '<p>Regression algorithms are used when the output you want to predict is a continuous number, like the price of a house or temperature tomorrow. The goal is to find the underlying relationship between input features and the output value.</p><p><strong>Linear Regression</strong>, shown here, tries to fit a straight line that best represents the data points, minimizing the overall error between the line and each point.</p>',
-                    algorithmName: 'Linear Regression', // Added for quiz generation
+                    algorithmName: 'Linear Regression',
                     controls: '<button id="run-regression" class="btn-primary font-bold py-2 px-4 rounded-lg">Run Simulation</button>'
                 },
                 classification: {
                     title: '<h3>Classification: Assigning Categories</h3>',
                     text: '<p>Classification algorithms are used to assign a label to a data point from a predefined set of categories. If there are two categories (e.g., Spam/Not Spam), it\'s binary classification. If there are more, it\'s multiclass.</p><p><strong>Support Vector Machine (SVM)</strong>, visualized here, finds the optimal "hyperplane" or boundary that best separates the data points into distinct classes with the largest possible margin.</p>',
-                    algorithmName: 'Support Vector Machine (SVM)', // Added for quiz generation
+                    algorithmName: 'Support Vector Machine (SVM)',
                     controls: ''
                 },
                 clustering: {
                     title: '<h3>Clustering: Finding Natural Groups</h3>',
                     text: '<p>Clustering is an unsupervised task where the goal is to discover natural groupings in data without any predefined labels. The algorithm groups similar data points together.</p><p><strong>K-Means</strong>, shown here, is a popular algorithm that groups data by trying to separate samples into K groups of equal variance, minimizing a criterion known as the inertia or within-cluster sum-of-squares. The number of clusters, K, must be specified beforehand.</p>',
-                    algorithmName: 'K-Means Clustering', // Added for quiz generation
+                    algorithmName: 'K-Means Clustering',
                     controls: '<label for="k-slider" class="mr-2 text-sm font-medium text-gray-700">Clusters (K):</label><input id="k-slider" type="range" min="2" max="5" value="3" class="w-32"><button id="run-kmeans" class="btn-primary font-bold py-2 px-4 rounded-lg ml-4">Run Simulation</button>'
                 }
             };
@@ -635,7 +407,7 @@
                          const sumY = ys.reduce((a, b) => a + b, 0);
                          const sumXY = data.reduce((a, b) => a + b.x * b.y, 0);
                          const sumX2 = xs.reduce((a, b) => a + b * b, 0);
-                         const m = (n * sumXY - sumX * sumX) === 0 ? 0 : (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX); // Prevent division by zero
+                         const m = (n * sumXY - sumX * sumX) === 0 ? 0 : (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
                          const b = (sumY - m * sumX) / n;
                          lineDataset.data = [{x: 0, y: b}, {x: 100, y: m * 100 + b}];
                          explorerChart.update();
@@ -764,109 +536,11 @@
 
             function renderExplorerContent(task) {
                 explorerDesc.innerHTML = content[task].title + content[task].text;
-                explorerControls.innerHTML = content[task].controls + `
-                    <button id="explain-with-gemini" class="btn-primary font-bold py-2 px-4 rounded-lg flex items-center space-x-2">
-                        ✨ Explain with Gemini
-                    </button>`;
+                explorerControls.innerHTML = content[task].controls;
                 if (task === 'regression') renderRegression();
                 else if (task === 'classification') renderClassification();
                 else if (task === 'clustering') renderClustering();
 
-                // Attach event listener for the new Gemini button in explorer
-                const explainGeminiBtn = document.getElementById('explain-with-gemini');
-                if (explainGeminiBtn) {
-                    explainGeminiBtn.onclick = () => {
-                        let prompt = "";
-                        if (task === 'regression') {
-                            prompt = "Explain Linear Regression in simple terms for a beginner, focusing on how it works, its goal, and a common real-world use case. Keep it concise, around 100-150 words.";
-                        } else if (task === 'classification') {
-                            prompt = "Explain Binary and Multiclass Classification, and how Support Vector Machines (SVM) work in simple terms for a beginner. Focus on their goal and a common real-world use case. Keep it concise, around 100-150 words.";
-                        } else if (task === 'clustering') {
-                            prompt = "Explain K-Means Clustering in simple terms for a beginner, focusing on how it works, its goal, and a common real-world use case. Keep it concise, around 100-150 words.";
-                        }
-                        fetchGeminiResponse(
-                            prompt,
-                            document.getElementById("gemini-explanation-text"),
-                            document.getElementById("gemini-explanation-loading")
-                        );
-                    };
-                }
-                // Hide any previous Gemini explanation when switching tasks
-                document.getElementById('gemini-explanation-display').classList.add('hidden');
-
-                // Quiz button and logic
-                const quizQuestionBtn = document.getElementById('generate-quiz-question');
-                const quizDisplay = document.getElementById('quiz-question-display');
-                const quizText = document.getElementById('quiz-question-text');
-                const quizOptions = document.getElementById('quiz-options');
-                const showAnswerBtn = document.getElementById('show-quiz-answer');
-                const quizAnswerText = document.getElementById('quiz-answer-text');
-                const quizLoading = document.getElementById('quiz-loading');
-
-                quizDisplay.classList.add('hidden'); // Hide previous quiz
-                quizText.innerHTML = '';
-                quizOptions.innerHTML = '';
-                showAnswerBtn.classList.add('hidden');
-                quizAnswerText.classList.add('hidden');
-                quizAnswerText.innerHTML = '';
-
-                quizQuestionBtn.onclick = async () => {
-                    const currentAlgorithm = content[task].algorithmName;
-                    const prompt = `Generate a multiple-choice quiz question about "${currentAlgorithm}" for a machine learning beginner. Provide 3 options and indicate the correct answer index (0, 1, or 2), and a short explanation. Respond in JSON format.`;
-                    const schema = {
-                        type: "OBJECT",
-                        properties: {
-                            "question": { "type": "STRING" },
-                            "options": {
-                                "type": "ARRAY",
-                                "items": { "type": "STRING" },
-                                "minItems": 3,
-                                "maxItems": 3
-                            },
-                            "correctAnswerIndex": { "type": "NUMBER" },
-                            "explanation": { "type": "STRING" }
-                        },
-                        "required": ["question", "options", "correctAnswerIndex", "explanation"]
-                    };
-
-                    const quizData = await fetchStructuredGeminiResponse(prompt, schema, quizText, quizLoading);
-
-                    if (quizData) {
-                        quizText.innerHTML = quizData.question;
-                        quizOptions.innerHTML = '';
-                        quizData.options.forEach((option, index) => {
-                            const optionDiv = document.createElement('div');
-                            optionDiv.className = 'p-2 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-100';
-                            optionDiv.textContent = `${String.fromCharCode(65 + index)}. ${option}`;
-                            optionDiv.onclick = () => {
-                                // Optional: visual feedback on selection
-                                quizOptions.querySelectorAll('div').forEach(div => div.classList.remove('bg-yellow-200'));
-                                optionDiv.classList.add('bg-yellow-200');
-                            };
-                            quizOptions.appendChild(optionDiv);
-                        });
-                        showAnswerBtn.classList.remove('hidden');
-                        quizAnswerText.dataset.correctIndex = quizData.correctAnswerIndex;
-                        quizAnswerText.dataset.explanation = quizData.explanation;
-                    }
-                };
-
-                showAnswerBtn.onclick = () => {
-                    const correctIndex = parseInt(quizAnswerText.dataset.correctIndex);
-                    const explanation = quizAnswerText.dataset.explanation;
-                    
-                    quizOptions.querySelectorAll('div').forEach((optionDiv, index) => {
-                        optionDiv.classList.remove('bg-yellow-200'); // Clear selection
-                        if (index === correctIndex) {
-                            optionDiv.classList.add('bg-green-200', 'font-bold');
-                        } else {
-                            optionDiv.classList.add('bg-red-100');
-                        }
-                    });
-                    quizAnswerText.innerHTML = `Correct Answer: ${String.fromCharCode(65 + correctIndex)}. ${quizOptions.children[correctIndex].textContent.substring(3).trim()}<br><br>Explanation: ${explanation}`;
-                    quizAnswerText.classList.remove('hidden');
-                    showAnswerBtn.classList.add('hidden'); // Hide show answer button after showing
-                };
             }
 
             explorerTabs.forEach(tab => {
@@ -877,81 +551,8 @@
                 });
             });
 
-            // Initial render
             renderExplorerContent('regression');
 
-            // Attach event listener for the general ML fact button
-            const generateFactBtn = document.getElementById('generate-ml-fact');
-            generateFactBtn.addEventListener('click', () => {
-                fetchGeminiResponse(
-                    "Generate a concise and interesting fact about machine learning or artificial intelligence. Start directly with the fact.",
-                    document.getElementById("ml-fact-text"),
-                    document.getElementById("ml-fact-loading")
-                );
-            });
-
-            // Ask Gemini Panel Logic
-            const toggleGeminiChatBtn = document.getElementById('toggle-gemini-chat');
-            const askGeminiPanel = document.getElementById('ask-gemini-panel');
-            const closeGeminiPanelBtn = document.getElementById('close-gemini-panel');
-            const geminiQueryInput = document.getElementById('gemini-query-input');
-            const submitGeminiQueryBtn = document.getElementById('submit-gemini-query');
-            const geminiQueryText = document.getElementById('gemini-query-text');
-            const geminiQueryLoading = document.getElementById('gemini-query-loading');
-            const geminiQueryDisplay = document.getElementById('gemini-query-display');
-
-            toggleGeminiChatBtn.addEventListener('click', () => {
-                askGeminiPanel.classList.toggle('active');
-                if (askGeminiPanel.classList.contains('active')) {
-                    geminiQueryInput.focus();
-                }
-            });
-
-            closeGeminiPanelBtn.addEventListener('click', () => {
-                askGeminiPanel.classList.remove('active');
-                geminiQueryDisplay.classList.add('hidden'); // Hide display when closing
-                geminiQueryInput.value = ''; // Clear input
-            });
-
-            submitGeminiQueryBtn.addEventListener('click', () => {
-                const query = geminiQueryInput.value.trim();
-                if (query) {
-                    const prompt = `Explain "${query}" in simple terms for a machine learning beginner. Focus on its core idea and relevance. Keep it concise, around 80-120 words.`;
-                    fetchGeminiResponse(prompt, geminiQueryText, geminiQueryLoading);
-                } else {
-                    geminiQueryText.parentElement.classList.remove('hidden');
-                    geminiQueryText.innerHTML = '<p class="text-red-600">Please enter a question.</p>';
-                }
-            });
-
-            // Generate Application Idea buttons logic
-            document.querySelectorAll('.generate-app-idea-btn').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const architecture = e.target.dataset.architecture;
-                    const card = e.target.closest('.card');
-                    const appIdeaText = card.querySelector('.app-idea-text');
-                    const appIdeaLoading = card.querySelector('.app-idea-loading');
-                    
-                    const prompt = `Suggest a creative and novel real-world application idea for a ${architecture}. Describe the problem it solves and how the architecture would be used. Keep it concise, around 80-120 words.`;
-                    fetchGeminiResponse(prompt, appIdeaText, appIdeaLoading);
-                });
-            });
-
-            // Summarize Section buttons logic
-            document.querySelectorAll('.summarize-section-btn').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const sectionId = e.target.dataset.sectionId;
-                    const section = document.getElementById(sectionId);
-                    const sectionTextContent = Array.from(section.querySelectorAll('h2, h3, p')).map(el => el.textContent).join(' ');
-                    
-                    const summaryDisplay = document.getElementById(`${sectionId}-summary-display`);
-                    const summaryText = summaryDisplay.querySelector('.summary-text');
-                    const summaryLoading = summaryDisplay.querySelector('.summary-loading');
-
-                    const prompt = `Summarize the following text about machine learning concepts concisely, in about 80-120 words:\n\n${sectionTextContent}`;
-                    fetchGeminiResponse(prompt, summaryText, summaryLoading);
-                });
-            });
         });
     </script>
 </body>
