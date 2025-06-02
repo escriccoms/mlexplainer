@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Machine Learning Explainer</title>
+    <!-- Chosen Palette: Calm Harmony -->
+    <!-- Application Structure Plan: A thematic, multi-section single-page application. A sticky sidebar navigation allows non-linear exploration of core topics: an introduction, a comparison of learning paradigms, an interactive algorithm explorer, a deep-dive into deep learning architectures, and a focused look at Transformers. This structure breaks down the dense report into manageable, task-oriented sections (e.g., "I want to see how clustering works"), using interactive visualizations to explain concepts, which is more engaging and effective for learning than static text. -->
+    <!-- Visualization & Content Choices: The application uses a mix of presentation methods tailored to the content's goal. Comparison Tables (HTML/Tailwind) are used to compare paradigms and algorithms. Interactive Charts (Chart.js) are used to demonstrate how algorithms like Linear Regression, K-Means, and SVM work visually. Conceptual flow diagrams (HTML/CSS) are used for complex architectures like Transformers, with hover interactions to provide details. This avoids static images and makes the concepts tangible. The choice of Chart.js for data visualization and custom HTML/CSS for diagrams ensures a lightweight, no-dependency solution for graphics, fully adhering to the NO SVG/Mermaid constraint. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF7;
+            color: #333;
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        .nav-link.active, .nav-link:hover {
+            background-color: #EFEAE3;
+            border-left-color: #D2B48C;
+            color: #1a1a1a;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            height: 350px;
+            max-height: 40vh;
+            margin: 1.5rem auto;
+        }
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+                max-height: 50vh;
+            }
+        }
+        .btn-primary {
+            background-color: #D2B48C;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #C1A37D;
+        }
+        .card {
+            background-color: #FFFFFF;
+            border: 1px solid #EFEAE3;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.07), 0 4px 6px -4px rgba(0,0,0,0.07);
+        }
+        .tab-button.active {
+            border-bottom: 2px solid #D2B48C;
+            color: #1a1a1a;
+        }
+        .transformer-block {
+            border: 2px solid #EFEAE3;
+            background-color: #fff;
+            position: relative;
+        }
+        .transformer-block:not(:last-child)::after {
+            content: '→';
+            position: absolute;
+            right: -24px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            color: #D2B48C;
+        }
+        @media (max-width: 1024px) {
+            .transformer-block:not(:last-child)::after {
+                content: '↓';
+                right: 50%;
+                top: 100%;
+                transform: translateX(50%) translateY(0);
+                margin-top: 8px;
+            }
+        }
+        .ask-gemini-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 90%;
+            max-width: 400px;
+            background-color: #FFFFFF;
+            border: 1px solid #EFEAE3;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
+            z-index: 1000;
+            padding: 1.5rem;
+            display: none;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .ask-gemini-panel.active {
+            display: flex;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <aside class="w-full md:w-64 bg-white/80 backdrop-blur-sm border-r border-gray-200/50 sticky top-0 h-screen shadow-sm md:shadow-none">
+            <div class="p-6">
+                <h1 class="text-2xl font-bold text-gray-800">ML Explainer</h1>
+                <p class="text-sm text-gray-500 mt-1">An Interactive Guide</p>
+            </div>
+            <nav id="main-nav" class="flex flex-row md:flex-col mt-4 md:mt-8">
+                <a href="#intro" class="nav-link text-gray-600 font-medium p-4 block active">Introduction</a>
+                <a href="#paradigms" class="nav-link text-gray-600 font-medium p-4 block">Learning Paradigms</a>
+                <a href="#explorer" class="nav-link text-gray-600 font-medium p-4 block">Algorithm Explorer</a>
+                <a href="#deep-learning" class="nav-link text-gray-600 font-medium p-4 block">Deep Learning</a>
+                <a href="#transformers" class="nav-link text-gray-600 font-medium p-4 block">Transformers Deep Dive</a>
+                <a href="#podcast-overview" class="nav-link text-gray-600 font-medium p-4 block">ML Overview Podcast Ep. 1</a>
+            </nav>
+        </aside>
+
+        <main class="flex-1 p-6 md:p-10 overflow-y-auto">
+            <section id="intro" class="content-section active">
+                <h2 class="text-4xl font-bold text-gray-800">The Landscape of Machine Learning</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl">This interactive guide translates the complex world of machine learning into a digestible, hands-on experience. Explore the core concepts, see algorithms in action, and understand the architectures that power modern AI. Navigate using the sidebar to begin your journey.</p>
+                
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="card">
+                        <h3 class="font-bold text-xl text-gray-800">What is Machine Learning?</h3>
+                        <p class="mt-2 text-gray-600">ML enables systems to learn and improve from experience without being explicitly programmed. It's a paradigm shift from traditional software, where machines develop their own algorithms by analyzing data and identifying patterns.</p>
+                    </div>
+                     <div class="card">
+                        <h3 class="font-bold text-xl text-gray-800">Core Workflow</h3>
+                        <p class="mt-2 text-gray-600">The process is an iterative cycle: gathering and preparing data, selecting a model, training it, evaluating its performance, tuning parameters, and finally deploying it to make predictions on new, unseen data.</p>
+                    </div>
+                    <div class="card">
+                        <h3 class="font-bold text-xl text-gray-800">Significance & Impact</h3>
+                        <p class="mt-2 text-gray-600">ML drives innovation across all industries, from financial risk assessment and medical diagnosis to e-commerce recommendations and self-driving cars. It powers efficiency, enhances decision-making, and creates new possibilities.</p>
+                    </div>
+                </div>
+
+                <div class="mt-8 flex justify-center">
+                    <button id="generate-ml-fact" class="btn-primary font-bold py-3 px-6 rounded-lg text-lg flex items-center space-x-2">
+                        ✨ Generate ML Fact
+                    </button>
+                </div>
+                <div id="ml-fact-display" class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-800 hidden">
+                    <p id="ml-fact-text" class="text-center"></p>
+                    <div id="ml-fact-loading" class="text-center text-gray-500 hidden">Loading...</div>
+                </div>
+            </section>
+
+            <section id="paradigms" class="content-section">
+                <h2 class="text-4xl font-bold text-gray-800">Fundamental Learning Paradigms</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl">Machine learning is broadly categorized by how an algorithm learns. Each paradigm uses a different approach to data and feedback to achieve its goal. Click on a card to learn more about the three primary types.</p>
+                
+                <div class="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="card text-center">
+                        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 text-blue-600 text-2xl font-bold">T</div>
+                        <h3 class="mt-6 text-xl font-bold text-gray-800">Supervised Learning</h3>
+                        <p class="mt-2 text-gray-600">Learning with a "teacher." The model is trained on labeled data, meaning each data point is tagged with the correct output. The goal is to learn a mapping function to make accurate predictions on new data.</p>
+                    </div>
+                    <div class="card text-center">
+                        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 text-green-600 text-2xl font-bold">?</div>
+                        <h3 class="mt-6 text-xl font-bold text-gray-800">Unsupervised Learning</h3>
+                        <p class="mt-2 text-gray-600">Finding hidden patterns. The model works with unlabeled data and tries to find intrinsic structures or relationships on its own, without a predefined outcome to guide it.</p>
+                    </div>
+                    <div class="card text-center">
+                        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-purple-100 text-purple-600 text-2xl font-bold">🏆</div>
+                        <h3 class="mt-6 text-xl font-bold text-gray-800">Reinforcement Learning</h3>
+                        <p class="mt-2 text-gray-600">Learning through trial and error. An "agent" interacts with an environment and learns to make decisions by receiving rewards or penalties for its actions, aiming to maximize its cumulative reward.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="explorer" class="content-section">
+                <h2 class="text-4xl font-bold text-gray-800">Interactive Algorithm Explorer</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl">Get a hands-on feel for how different algorithms work. Select a task, choose an algorithm, and see a visual demonstration of its core logic. This section helps build an intuitive understanding of these foundational models.</p>
+
+                <div class="mt-10">
+                    <div class="border-b border-gray-200">
+                        <nav id="explorer-tabs" class="-mb-px flex space-x-8" aria-label="Tabs">
+                            <button data-task="regression" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg text-gray-500 hover:text-gray-700 hover:border-gray-300 active">Predict a Value</button>
+                            <button data-task="classification" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg text-gray-500 hover:text-gray-700 hover:border-gray-300">Categorize Data</button>
+                            <button data-task="clustering" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg text-gray-500 hover:text-gray-700 hover:border-gray-300">Group Data</button>
+                        </nav>
+                    </div>
+                    <div class="mt-8">
+                        <div id="explorer-content" class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+                            <div id="explorer-description" class="prose max-w-none text-gray-600"></div>
+                            <div>
+                                <div class="chart-container">
+                                    <canvas id="explorer-chart"></canvas>
+                                </div>
+                                <div id="explorer-controls" class="flex flex-col sm:flex-row justify-center items-center mt-4 space-y-4 sm:space-y-0 sm:space-x-4">
+                                    </div>
+                                <div id="gemini-explanation-display" class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg text-blue-800 hidden">
+                                    <p id="gemini-explanation-text"></p>
+                                    <div id="gemini-explanation-loading" class="text-center text-gray-500 hidden">Loading...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="deep-learning" class="content-section">
+                <h2 class="text-4xl font-bold text-gray-800">Deep Learning Architectures</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl">Deep Learning uses complex, multi-layered neural networks inspired by the human brain. Different architectures are specialized for different tasks, from image recognition to natural language understanding. Explore some of the most common architectures below.</p>
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="card">
+                        <h3 class="font-bold text-xl">Convolutional Neural Networks (CNNs)</h3>
+                        <p class="mt-2 text-gray-600">Masters of vision. CNNs are designed to process grid-like data, such as images. They use layers of filters to automatically learn and detect features like edges, shapes, and objects.</p>
+                        <p class="mt-3 text-sm font-semibold text-gray-500">Use Cases: Image Recognition, Video Analysis</p>
+                        <button data-architecture="Convolutional Neural Network" class="generate-app-idea-btn btn-primary font-bold py-2 px-4 rounded-lg text-sm mt-4 w-full flex items-center justify-center space-x-2">
+                            ✨ Generate Idea
+                        </button>
+                        <div class="app-idea-display mt-3 p-3 bg-indigo-50 border border-indigo-200 rounded-lg text-indigo-800 hidden">
+                            <p class="app-idea-text text-sm"></p>
+                            <div class="app-idea-loading text-center text-gray-500 text-sm hidden">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3 class="font-bold text-xl">Recurrent Neural Networks (RNNs)</h3>
+                        <p class="mt-2 text-gray-600">The sequence specialists. RNNs have internal memory, allowing them to process sequences of data like text or time series. They are fundamental to natural language processing.</p>
+                        <p class="mt-3 text-sm font-semibold text-gray-500">Use Cases: Speech Recognition, Text Generation</p>
+                        <button data-architecture="Recurrent Neural Network" class="generate-app-idea-btn btn-primary font-bold py-2 px-4 rounded-lg text-sm mt-4 w-full flex items-center justify-center space-x-2">
+                            ✨ Generate Idea
+                        </button>
+                        <div class="app-idea-display mt-3 p-3 bg-indigo-50 border border-indigo-200 rounded-lg text-indigo-800 hidden">
+                            <p class="app-idea-text text-sm"></p>
+                            <div class="app-idea-loading text-center text-gray-500 text-sm hidden">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3 class="font-bold text-xl">Long Short-Term Memory (LSTMs)</h3>
+                        <p class="mt-2 text-gray-600">An advanced RNN. LSTMs solve the short-term memory problem of standard RNNs, enabling them to learn long-range dependencies in sequential data. They use special "gates" to control information flow.</p>
+                        <p class="mt-3 text-sm font-semibold text-gray-500">Use Cases: Machine Translation, Handwriting Recognition</p>
+                        <button data-architecture="Long Short-Term Memory network (LSTM)" class="generate-app-idea-btn btn-primary font-bold py-2 px-4 rounded-lg text-sm mt-4 w-full flex items-center justify-center space-x-2">
+                            ✨ Generate Idea
+                        </button>
+                        <div class="app-idea-display mt-3 p-3 bg-indigo-50 border border-indigo-200 rounded-lg text-indigo-800 hidden">
+                            <p class="app-idea-text text-sm"></p>
+                            <div class="app-idea-loading text-center text-gray-500 text-sm hidden">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3 class="font-bold text-xl">Generative Adversarial Networks (GANs)</h3>
+                        <p class="mt-2 text-gray-600">The creative artists. GANs consist of two competing networks: a Generator that creates new data and a Discriminator that tries to tell fake from real. This adversarial process results in highly realistic generated content.</p>
+                        <p class="mt-3 text-sm font-semibold text-gray-500">Use Cases: Image Generation, Data Augmentation</p>
+                        <button data-architecture="Generative Adversarial Network (GAN)" class="generate-app-idea-btn btn-primary font-bold py-2 px-4 rounded-lg text-sm mt-4 w-full flex items-center justify-center space-x-2">
+                            ✨ Generate Idea
+                        </button>
+                        <div class="app-idea-display mt-3 p-3 bg-indigo-50 border border-indigo-200 rounded-lg text-indigo-800 hidden">
+                            <p class="app-idea-text text-sm"></p>
+                            <div class="app-idea-loading text-center text-gray-500 text-sm hidden">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3 class="font-bold text-xl">Autoencoders</h3>
+                        <p class="mt-2 text-gray-600">The data compressors. Autoencoders learn to compress data into a low-dimensional representation (encoding) and then reconstruct it back to its original form. They are excellent for anomaly detection and dimensionality reduction.</p>
+                        <p class="mt-3 text-sm font-semibold text-gray-500">Use Cases: Anomaly Detection, Data Denoising</p>
+                        <button data-architecture="Autoencoder" class="generate-app-idea-btn btn-primary font-bold py-2 px-4 rounded-lg text-sm mt-4 w-full flex items-center justify-center space-x-2">
+                            ✨ Generate Idea
+                        </button>
+                        <div class="app-idea-display mt-3 p-3 bg-indigo-50 border border-indigo-200 rounded-lg text-indigo-800 hidden">
+                            <p class="app-idea-text text-sm"></p>
+                            <div class="app-idea-loading text-center text-gray-500 text-sm hidden">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3 class="font-bold text-xl">Transformers</h3>
+                        <p class="mt-2 text-gray-600">The new standard in NLP. Transformers use a "self-attention" mechanism to weigh the importance of different words in a sequence, allowing for parallel processing and a superior understanding of context.</p>
+                        <p class="mt-3 text-sm font-semibold text-gray-500">Use Cases: Large Language Models (GPT), Translation</p>
+                        <button data-architecture="Transformer" class="generate-app-idea-btn btn-primary font-bold py-2 px-4 rounded-lg text-sm mt-4 w-full flex items-center justify-center space-x-2">
+                            ✨ Generate Idea
+                        </button>
+                        <div class="app-idea-display mt-3 p-3 bg-indigo-50 border border-indigo-200 rounded-lg text-indigo-800 hidden">
+                            <p class="app-idea-text text-sm"></p>
+                            <div class="app-idea-loading text-center text-gray-500 text-sm hidden">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="transformers" class="content-section">
+                <h2 class="text-4xl font-bold text-gray-800">Deep Dive: The Transformer Architecture</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl">Transformers have revolutionized Natural Language Processing. Their key innovation is the **self-attention mechanism**, which allows them to process entire sequences in parallel and weigh the importance of different words to understand context. The diagram below shows a simplified data flow.</p>
+                <div class="mt-12 flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-6">
+                    <div class="transformer-block text-center p-4 rounded-lg w-full lg:w-48">
+                        <h4 class="font-bold">1. Input</h4>
+                        <p class="text-sm text-gray-600">Raw text sequence</p>
+                    </div>
+                    <div class="transformer-block text-center p-4 rounded-lg w-full lg:w-48">
+                        <h4 class="font-bold">2. Embeddings</h4>
+                        <p class="text-sm text-gray-600">Words converted to vectors</p>
+                    </div>
+                    <div class="transformer-block text-center p-4 rounded-lg w-full lg:w-48">
+                        <h4 class="font-bold">3. Positional Encoding</h4>
+                        <p class="text-sm text-gray-600">Positional info added to vectors</p>
+                    </div>
+                    <div class="transformer-block text-center p-4 rounded-lg w-full lg:w-48 bg-blue-50 border-blue-200">
+                        <h4 class="font-bold">4. Multi-Head Attention</h4>
+                        <p class="text-sm text-gray-600">Context is learned by weighing word importance</p>
+                    </div>
+                    <div class="transformer-block text-center p-4 rounded-lg w-full lg:w-48">
+                        <h4 class="font-bold">5. Output</h4>
+                        <p class="text-sm text-gray-600">Final sequence generated</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="podcast-overview" class="content-section">
+                <h2 class="text-4xl font-bold text-gray-800">ML Overview Podcast Ep. 1</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-3xl">Listen to the first episode of our Machine Learning Overview Podcast, where we break down fundamental concepts and discuss the exciting world of AI.</p>
+                <div class="mt-8 flex justify-center">
+                    <audio controls autoplay class="w-full max-w-xl rounded-lg shadow-md">
+                        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+                <p class="mt-4 text-sm text-gray-500 text-center">Note: This is a placeholder audio file for demonstration purposes.</p>
+            </section>
+
+        </main>
+    </div>
+
+    <button id="toggle-gemini-chat" class="fixed bottom-6 right-6 bg-purple-600 text-white rounded-full p-4 shadow-lg hover:bg-purple-700 transition-colors text-2xl z-1000">
+        ✨
+    </button>
+
+    <div id="ask-gemini-panel" class="ask-gemini-panel">
+        <div class="flex justify-between items-center">
+            <h3 class="text-xl font-bold text-gray-800">Ask Gemini</h3>
+            <button id="close-gemini-panel" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+        </div>
+        <input type="text" id="gemini-query-input" placeholder="e.g., What is overfitting?" class="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-300">
+        <button id="submit-gemini-query" class="btn-primary font-bold py-2 px-4 rounded-lg flex items-center justify-center space-x-2">
+            Ask
+        </button>
+        <div id="gemini-query-display" class="p-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-800 hidden">
+            <p id="gemini-query-text" class="text-sm"></p>
+            <div id="gemini-query-loading" class="text-center text-gray-500 hidden">Loading...</div>
+        </div>
+    </div>
+
+    <script>
+        const apiKey = ""; // Gemini API key - leave as empty string for Canvas to provide at runtime
+
+        async function fetchGeminiResponse(prompt, targetElement, loadingElement) {
+            targetElement.parentElement.classList.remove('hidden');
+            targetElement.innerHTML = ''; // Clear previous content
+            loadingElement.classList.remove('hidden');
+
+            try {
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    targetElement.innerHTML = text;
+                } else {
+                    targetElement.innerHTML = '<p class="text-red-600">Error: Could not get a valid response from Gemini.</p>';
+                    console.error("Gemini API response structure unexpected:", result);
+                }
+            } catch (error) {
+                targetElement.innerHTML = `<p class="text-red-600">Error fetching response: ${error.message}</p>`;
+                console.error("Error calling Gemini API:", error);
+            } finally {
+                loadingElement.classList.add('hidden');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const navLinks = document.querySelectorAll('#main-nav a');
+            const sections = document.querySelectorAll('.content-section');
+            const explorerTabs = document.querySelectorAll('#explorer-tabs button');
+            const explorerDesc = document.getElementById('explorer-description');
+            const explorerControls = document.getElementById('explorer-controls');
+            const chartCanvas = document.getElementById('explorer-chart');
+            let explorerChart;
+
+            const content = {
+                regression: {
+                    title: '<h3>Regression: Predicting Continuous Values</h3>',
+                    text: '<p>Regression algorithms are used when the output you want to predict is a continuous number, like the price of a house or temperature tomorrow. The goal is to find the underlying relationship between input features and the output value.</p><p><strong>Linear Regression</strong>, shown here, tries to fit a straight line that best represents the data points, minimizing the overall error between the line and each point.</p>',
+                    controls: '<button id="run-regression" class="btn-primary font-bold py-2 px-4 rounded-lg">Run Simulation</button>'
+                },
+                classification: {
+                    title: '<h3>Classification: Assigning Categories</h3>',
+                    text: '<p>Classification algorithms are used to assign a label to a data point from a predefined set of categories. If there are two categories (e.g., Spam/Not Spam), it\'s binary classification. If there are more, it\'s multiclass.</p><p><strong>Support Vector Machine (SVM)</strong>, visualized here, finds the optimal "hyperplane" or boundary that best separates the data points into distinct classes with the largest possible margin.</p>',
+                    controls: ''
+                },
+                clustering: {
+                    title: '<h3>Clustering: Finding Natural Groups</h3>',
+                    text: '<p>Clustering is an unsupervised task where the goal is to discover natural groupings in data without any predefined labels. The algorithm groups similar data points together.</p><p><strong>K-Means</strong>, shown here, is a popular algorithm that groups data by trying to separate samples into K groups of equal variance, minimizing a criterion known as the inertia or within-cluster sum-of-squares. The number of clusters, K, must be specified beforehand.</p>',
+                    controls: '<label for="k-slider" class="mr-2 text-sm font-medium text-gray-700">Clusters (K):</label><input id="k-slider" type="range" min="2" max="5" value="3" class="w-32"><button id="run-kmeans" class="btn-primary font-bold py-2 px-4 rounded-lg ml-4">Run Simulation</button>'
+                }
+            };
+
+            function navigate(hash) {
+                navLinks.forEach(link => {
+                    link.classList.toggle('active', link.hash === hash);
+                });
+                sections.forEach(section => {
+                    section.classList.toggle('active', `#${section.id}` === hash);
+                });
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.location.hash = e.target.hash;
+                });
+            });
+            
+            window.addEventListener('hashchange', () => navigate(window.location.hash || '#intro'));
+            navigate(window.location.hash || '#intro');
+
+
+            function generateScatterData(numPoints, numClusters) {
+                const data = [];
+                const clusterCenters = Array.from({ length: numClusters }, () => ({
+                    x: Math.random() * 80 + 10,
+                    y: Math.random() * 80 + 10,
+                }));
+
+                for (let i = 0; i < numPoints; i++) {
+                    const clusterIndex = Math.floor(Math.random() * numClusters);
+                    const center = clusterCenters[clusterIndex];
+                    data.push({
+                        x: center.x + (Math.random() - 0.5) * 20,
+                        y: center.y + (Math.random() - 0.5) * 20,
+                    });
+                }
+                return data;
+            }
+
+            function destroyChart() {
+                if (explorerChart) {
+                    explorerChart.destroy();
+                    explorerChart = null;
+                }
+            }
+            
+            function renderRegression() {
+                destroyChart();
+                const data = generateScatterData(50, 1).map(p => ({x: p.x, y: p.x * 1.2 + Math.random() * 20 - 10}));
+                
+                const backgroundColors = data.map(() => 'rgba(210, 180, 140, 0.6)');
+
+                explorerChart = new Chart(chartCanvas, {
+                    type: 'scatter',
+                    data: {
+                        datasets: [{
+                            label: 'Data Points',
+                            data: data,
+                            backgroundColor: backgroundColors
+                        }, {
+                            label: 'Regression Line',
+                            type: 'line',
+                            data: [],
+                            borderColor: 'rgb(255, 99, 132)',
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { x: { display: false }, y: { display: false } },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+
+                document.getElementById('run-regression').onclick = () => {
+                    const lineDataset = explorerChart.data.datasets[1];
+                    lineDataset.data = [{x: 0, y: 50}, {x: 100, y: 50}];
+                    explorerChart.update();
+                    setTimeout(() => {
+                         const xs = data.map(p => p.x);
+                         const ys = data.map(p => p.y);
+                         const n = data.length;
+                         const sumX = xs.reduce((a, b) => a + b, 0);
+                         const sumY = ys.reduce((a, b) => a + b, 0);
+                         const sumXY = data.reduce((a, b) => a + b.x * b.y, 0);
+                         const sumX2 = xs.reduce((a, b) => a + b * b, 0);
+                         const m = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+                         const b = (sumY - m * sumX) / n;
+                         lineDataset.data = [{x: 0, y: b}, {x: 100, y: m * 100 + b}];
+                         explorerChart.update();
+                    }, 500);
+                };
+            }
+
+            function renderClassification() {
+                destroyChart();
+                const classA = generateScatterData(30, 1).map(p => ({...p, class:0}));
+                const classB = generateScatterData(30, 1).map(p => ({...p, class:1}));
+                const data = [...classA, ...classB];
+
+                explorerChart = new Chart(chartCanvas, {
+                    type: 'scatter',
+                    data: {
+                        datasets: [{
+                            label: 'Classes',
+                            data: data,
+                            backgroundColor: data.map(p => p.class === 0 ? 'rgba(54, 162, 235, 0.6)' : 'rgba(255, 99, 132, 0.6)')
+                        },{
+                           label: 'Decision Boundary',
+                           type: 'line',
+                           data: [{x: 5, y: 95}, {x: 95, y: 5}],
+                           borderColor: 'rgb(75, 192, 192)',
+                           borderWidth: 3,
+                           fill: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { x: { display: false }, y: { display: false } },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
+            
+            function renderClustering() {
+                destroyChart();
+                const numPoints = 150;
+                let k = 3;
+                let data = [];
+                let centroids = [];
+                const colors = ['rgba(255, 99, 132, 0.6)', 'rgba(54, 162, 235, 0.6)', 'rgba(255, 206, 86, 0.6)', 'rgba(75, 192, 192, 0.6)', 'rgba(153, 102, 255, 0.6)'];
+
+                function initialize() {
+                    k = parseInt(document.getElementById('k-slider').value);
+                    data = generateScatterData(numPoints, k);
+                    centroids = data.slice(0, k).map(p => ({...p}));
+
+                    if (explorerChart) explorerChart.destroy();
+                    
+                    explorerChart = new Chart(chartCanvas, {
+                        type: 'scatter',
+                        data: {
+                            datasets: [{
+                                label: 'Data Points',
+                                data: data,
+                                backgroundColor: 'rgba(128, 128, 128, 0.6)'
+                            }, {
+                                label: 'Centroids',
+                                data: centroids,
+                                backgroundColor: colors.slice(0, k),
+                                pointStyle: 'triangle',
+                                radius: 10
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: { x: { display: false }, y: { display: false } },
+                            plugins: { legend: { display: false } }
+                        }
+                    });
+                }
+                
+                function euclideanDistance(p1, p2) {
+                    return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+                }
+
+                function runKMeansStep() {
+                    let clusters = Array.from({ length: k }, () => []);
+                    
+                    data.forEach(point => {
+                        let minDistance = Infinity;
+                        let clusterIndex = -1;
+                        centroids.forEach((centroid, index) => {
+                            const distance = euclideanDistance(point, centroid);
+                            if (distance < minDistance) {
+                                minDistance = distance;
+                                clusterIndex = index;
+                            }
+                        });
+                        clusters[clusterIndex].push(point);
+                        point.cluster = clusterIndex;
+                    });
+                    
+                    explorerChart.data.datasets[0].backgroundColor = data.map(p => colors[p.cluster]);
+                    explorerChart.update('none');
+
+                    setTimeout(() => {
+                        let moved = false;
+                        centroids.forEach((centroid, index) => {
+                            if (clusters[index].length > 0) {
+                                const newX = clusters[index].reduce((sum, p) => sum + p.x, 0) / clusters[index].length;
+                                const newY = clusters[index].reduce((sum, p) => sum + p.y, 0) / clusters[index].length;
+                                if(Math.abs(centroid.x - newX) > 0.1 || Math.abs(centroid.y - newY) > 0.1) moved = true;
+                                centroid.x = newX;
+                                centroid.y = newY;
+                            }
+                        });
+                        explorerChart.update();
+                        if(moved) setTimeout(runKMeansStep, 1000);
+                    }, 500);
+                }
+                
+                initialize();
+                document.getElementById('k-slider').onchange = initialize;
+                document.getElementById('run-kmeans').onclick = () => {
+                    initialize();
+                    setTimeout(runKMeansStep, 500);
+                };
+            }
+
+
+            function renderExplorerContent(task) {
+                explorerDesc.innerHTML = content[task].title + content[task].text;
+                explorerControls.innerHTML = content[task].controls + `
+                    <button id="explain-with-gemini" class="btn-primary font-bold py-2 px-4 rounded-lg flex items-center space-x-2">
+                        ✨ Explain with Gemini
+                    </button>`;
+                if (task === 'regression') renderRegression();
+                else if (task === 'classification') renderClassification();
+                else if (task === 'clustering') renderClustering();
+
+                // Attach event listener for the new Gemini button in explorer
+                const explainGeminiBtn = document.getElementById('explain-with-gemini');
+                if (explainGeminiBtn) {
+                    explainGeminiBtn.onclick = () => {
+                        let prompt = "";
+                        if (task === 'regression') {
+                            prompt = "Explain Linear Regression in simple terms for a beginner, focusing on how it works, its goal, and a common real-world use case. Keep it concise, around 100-150 words.";
+                        } else if (task === 'classification') {
+                            prompt = "Explain Binary and Multiclass Classification, and how Support Vector Machines (SVM) work in simple terms for a beginner. Focus on their goal and a common real-world use case. Keep it concise, around 100-150 words.";
+                        } else if (task === 'clustering') {
+                            prompt = "Explain K-Means Clustering in simple terms for a beginner, focusing on how it works, its goal, and a common real-world use case. Keep it concise, around 100-150 words.";
+                        }
+                        fetchGeminiResponse(
+                            prompt,
+                            document.getElementById("gemini-explanation-text"),
+                            document.getElementById("gemini-explanation-loading")
+                        );
+                    };
+                }
+                // Hide any previous Gemini explanation when switching tasks
+                document.getElementById('gemini-explanation-display').classList.add('hidden');
+            }
+
+            explorerTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    explorerTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    renderExplorerContent(tab.dataset.task);
+                });
+            });
+
+            // Initial render
+            renderExplorerContent('regression');
+
+            // Attach event listener for the general ML fact button
+            const generateFactBtn = document.getElementById('generate-ml-fact');
+            generateFactBtn.addEventListener('click', () => {
+                fetchGeminiResponse(
+                    "Generate a concise and interesting fact about machine learning or artificial intelligence. Start directly with the fact.",
+                    document.getElementById("ml-fact-text"),
+                    document.getElementById("ml-fact-loading")
+                );
+            });
+
+            // Ask Gemini Panel Logic
+            const toggleGeminiChatBtn = document.getElementById('toggle-gemini-chat');
+            const askGeminiPanel = document.getElementById('ask-gemini-panel');
+            const closeGeminiPanelBtn = document.getElementById('close-gemini-panel');
+            const geminiQueryInput = document.getElementById('gemini-query-input');
+            const submitGeminiQueryBtn = document.getElementById('submit-gemini-query');
+            const geminiQueryText = document.getElementById('gemini-query-text');
+            const geminiQueryLoading = document.getElementById('gemini-query-loading');
+            const geminiQueryDisplay = document.getElementById('gemini-query-display');
+
+            toggleGeminiChatBtn.addEventListener('click', () => {
+                askGeminiPanel.classList.toggle('active');
+                if (askGeminiPanel.classList.contains('active')) {
+                    geminiQueryInput.focus();
+                }
+            });
+
+            closeGeminiPanelBtn.addEventListener('click', () => {
+                askGeminiPanel.classList.remove('active');
+                geminiQueryDisplay.classList.add('hidden'); // Hide display when closing
+                geminiQueryInput.value = ''; // Clear input
+            });
+
+            submitGeminiQueryBtn.addEventListener('click', () => {
+                const query = geminiQueryInput.value.trim();
+                if (query) {
+                    const prompt = `Explain "${query}" in simple terms for a machine learning beginner. Focus on its core idea and relevance. Keep it concise, around 80-120 words.`;
+                    fetchGeminiResponse(prompt, geminiQueryText, geminiQueryLoading);
+                } else {
+                    geminiQueryText.parentElement.classList.remove('hidden');
+                    geminiQueryText.innerHTML = '<p class="text-red-600">Please enter a question.</p>';
+                }
+            });
+
+            // Generate Application Idea buttons logic
+            document.querySelectorAll('.generate-app-idea-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const architecture = e.target.dataset.architecture;
+                    const card = e.target.closest('.card');
+                    const appIdeaText = card.querySelector('.app-idea-text');
+                    const appIdeaLoading = card.querySelector('.app-idea-loading');
+                    
+                    const prompt = `Suggest a creative and novel real-world application idea for a ${architecture}. Describe the problem it solves and how the architecture would be used. Keep it concise, around 80-120 words.`;
+                    fetchGeminiResponse(prompt, appIdeaText, appIdeaLoading);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
